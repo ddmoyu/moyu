@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(moyu)
+project(main)
 
 set(VERSION 0.0.1)
 
@@ -16,13 +16,13 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.ui"
 )
 
-add_compile_definitions(QT_MESSAGELOGCONTEXT)
-
 target_sources(
     ${PROJECT_NAME}
     PRIVATE
     ${SOURCES}
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/include)
 
 target_link_libraries(
     ${PROJECT_NAME}

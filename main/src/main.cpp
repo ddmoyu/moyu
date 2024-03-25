@@ -1,9 +1,9 @@
-#include "views/moyu.h"
+#include "views/main.h"
 
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    MoYu w;
+    Main w;
     w.show();
     return a.exec();
 }
