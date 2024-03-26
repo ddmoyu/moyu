@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 
 #include "ui_main.h"
+#include "../../utils/utils.h"
 
 class Main : public QWidget
 {
@@ -11,4 +12,6 @@ public:
 
 private:
     Ui::MainClass* ui;
+
+    void initUi();
 };

@@ -1,10 +1,10 @@
-#include "downloader.h"
+﻿#include "downloader.h"
 
-Downloader::Downloader(QWidget* parent) 
-: QWidget(parent)
-, ui(new Ui::DownloaderClass())
+Downloader::Downloader(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::DownloaderClass())
 {
     ui->setupUi(this);
 }
 
-Downloader::~Downloader() {}
+Downloader::~Downloader() { }

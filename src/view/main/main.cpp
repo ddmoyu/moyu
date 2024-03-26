@@ -1,10 +1,17 @@
-#include "main.h"
+﻿#include "main.h"
 
-Main::Main(QWidget* parent) 
-: QWidget(parent)
-, ui(new Ui::MainClass())
+Main::Main(QWidget* parent)
+    : QWidget(parent)
+    , ui(new Ui::MainClass())
 {
     ui->setupUi(this);
+    initUi();
 }
 
-Main::~Main() {}
+Main::~Main() { }
+
+void Main::initUi()
+{
+    const QString style = Util::invokeStyleSheetLoad("dark");
+    setStyleSheet(style);
+}
