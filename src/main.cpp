@@ -1,4 +1,4 @@
-#include "views/main.h"
+#include "view/main/main.h"
 
 int main(int argc, char* argv[])
 {
