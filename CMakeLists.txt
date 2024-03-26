@@ -16,8 +16,10 @@ foreach(ENV_ENTRY ${ENV_ENTRIES})
         set(ENV_${CMAKE_MATCH_1} ${CMAKE_MATCH_2})
     endif()
 endforeach()
-#set(CMAKE_PREFIX_PATH D:/Qt6/6.6.2/msvc2019_64)
+
 set(CMAKE_PREFIX_PATH ${ENV_QT6_DIR})
+
+set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
@@ -50,10 +52,13 @@ target_sources(${PROJECT_NAME}
     ${SOURCES}
 )
 
+add_subdirectory(third_party/singleapplication)
+
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
     Sass
+    SingleApplication::SingleApplication
 )
