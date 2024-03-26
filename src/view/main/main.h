@@ -14,4 +14,6 @@ private:
     Ui::MainClass* ui;
 
     void initUi();
+
+    void initConnect();
 };
