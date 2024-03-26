@@ -1,4 +1,4 @@
-#include "manager.h"
+﻿#include "manager.h"
 
 Manager::Manager(QWidget* parent) 
 : QWidget(parent)
