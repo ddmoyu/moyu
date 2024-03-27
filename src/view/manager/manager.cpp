@@ -26,8 +26,9 @@ void Manager::initConnect()
 void Manager::testHttpsRequest()
 {
     auto networkManager = new QNetworkAccessManager(this);
-    // QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&pg=2"); // page n videolist
-    QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&ids=69733");
+     //QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&pg=1"); // page n videolist
+    QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&ids=69733"); // video detail
+    //QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?wd=1");
     networkManager->get(QNetworkRequest(url));
     connect(networkManager, &QNetworkAccessManager::finished, this, [](QNetworkReply* reply) {
         qDebug() << "request successfully";
