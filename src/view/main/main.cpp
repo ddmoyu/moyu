@@ -1,4 +1,5 @@
 ﻿#include "main.h"
+#include "../manager/manager.h"
 
 Main::Main(QWidget* parent)
     : QWidget(parent)
@@ -39,5 +40,10 @@ void Main::initConnect()
     });
     connect(ui->btn_settings, &QPushButton::clicked, [&]() {
         ui->body_wgt->setCurrentIndex(6);
+    });
+
+    connect(ui->btn_manager, &QPushButton::clicked, [&]() {
+        Manager* m_manager = new Manager(nullptr);
+        m_manager->show();
     });
 }

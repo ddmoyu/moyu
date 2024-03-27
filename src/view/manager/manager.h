@@ -11,4 +11,12 @@ public:
 
 private:
     Ui::managerClass* ui;
+
+    void initUi();
+
+    void initConnect();
+
+    void testHttpsRequest();
+
+    void showRemoteImage();
 };
