@@ -1,33 +1,3 @@
-struct VideoItem
-{
-    int vod_id;
-    std::string vod_name;
-    int type_id;
-    std::string type_name;
-    std::string vod_en;
-    std::string vod_time;
-    std::string vod_remarks;
-    std::string vod_play_from;
-};
-
-struct ClassType
-{
-    int type_id;
-    std::string type_name;
-};
-
-struct VideoData
-{
-    int code;
-    std::string msg;
-    int page;
-    int pagecount;
-    int limit;
-    int total;
-    std::vector<VideoItem> list;
-    std::vector<VideoType> classList;
-};
-
 struct VodPlayUrl
 {
     std::string episode;
@@ -130,6 +100,34 @@ struct VideoDataList
     int total;
     std::vector<Video> list;
 };
+
+// video list [NULL]
+struct VideoItem
+{
+    int vod_id;
+    std::string vod_name;
+    int type_id;
+    std::string type_name;
+    std::string vod_en;
+    std::string vod_time;
+    std::string vod_remarks;
+    std::string vod_play_from;
+};
+struct ClassType
+{
+    int type_id;
+    std::string type_name;
+};
+struct VideoList{
+    int code;
+    std::string msg;
+    int page;
+    int pagecount;
+    int limit;
+    int total;
+    std::vector<VideoItem> _list;
+    std::vector<ClassType> _class;
+}
 
 // video page [&pg=] [&t=]
 
