@@ -1,0 +1,112 @@
+{
+  "video": [
+    {
+      "id": "4a871b02-1c03-34de-281f-109ff7946efb",
+      "name": "卧龙资源",
+      "api": "https://collect.wolongzyw.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "cd6b1cbe-42bb-42d3-7844-9494716487e5",
+      "name": "量子资源",
+      "api": "http://cj.lziapi.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "504ae106-5751-379f-8a1e-83bad8cd7d61",
+      "name": "百度云资源",
+      "api": "https://api.apibdzy.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "6768cdcf-4d18-5fef-10d2-98d513b1f991",
+      "name": "新浪资源",
+      "api": "https://api.xinlangapi.com/xinlangapi.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "2cc99a31-9a03-16f4-3a8e-6db1f113bc5e",
+      "name": "快车资源",
+      "api": "https://caiji.kczyapi.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "562aeb6b-8c03-3660-54e2-291f121dac9e",
+      "name": "鱼乐资源",
+      "api": "https://ylzy11.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "6e15aeae-775f-e647-eaa8-5197d49257c9",
+      "name": "KK资源网",
+      "api": "https://kkzy.me/api.php/provide/vod/at/xmlsea",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "47ca5cdc-a027-412c-f267-67c20b6e46a6",
+      "name": "大地",
+      "api": "https://dadiapi.com/api.php",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "6d6e09a7-7415-9697-1267-e9f0100dad84",
+      "name": "老鸭",
+      "api": "https://api.apilyzy.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "9d8974ba-ddfc-5e53-b008-29f37e5fc88b",
+      "name": "155",
+      "api": "https://155api.com/api.php/provide/vod/",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "8a885bf6-666b-5bbf-8669-4c7f1ffb7a71",
+      "name": "开云",
+      "api": "https://kaiyunzy5.com/inc/apijson_vod.php",
+      "group": "切片",
+      "playUrl": "https://jiexi.kaiyunzy.vip/m3u8/?url=",
+      "active": true,
+      "search": true
+    },
+    {
+      "id": "cdf74a23-bd46-d076-a09c-687048469041",
+      "name": "色猫资源",
+      "api": "https://api.maozyapi.com/inc/api.php",
+      "group": "切片",
+      "playUrl": "",
+      "active": true,
+      "search": true
+    }
+  ]
+}

@@ -1,9 +1,5 @@
 ﻿#include "manager.h"
-
-#include "../../utils/utils.h"
-#include "simdjson.h"
-
-using namespace simdjson;
+#include "../../utils/videoUtils/videoUtils.h"
 
 Manager::Manager(QWidget* parent)
     : QWidget(parent)
@@ -26,27 +22,44 @@ void Manager::initConnect()
 
 void Manager::testHttpsRequest()
 {
-    const QUrl api("https://collect.wolongzyw.com/api.php/provide/vod/");
+    const QString api("https://collect.wolongzyw.com/api.php/provide/vod/");
+
     // ReSharper disable once CppExpressionWithoutSideEffects
-    testPromise(api)
-        .then([&](const QString& code) { // NOLINT(clang-diagnostic-microsoft-end-of-file)
-            // ui->result->setPlainText(code);
-
-            const QString test = QString("{\"msg\":\"你好, 世界！\"}");
-
-            dom::parser parser;
-            const dom::element json = parser.parse(test.toStdString());
-            std::cout << "Parsed JSON:" << json << std::endl;
-
-            std::string_view msg;
-            json["msg"].get(msg);
-            std::cout << "Value of 'example': " << msg.data() << std::endl;
-
-            ui->result->setPlainText(QString::fromStdString(msg.data()));
-
+    /*getVideoSimpleData("https://collect.wolongzyw.com/api.php/provide/vod/")
+        .then([&](const VideoSimpleData& data) {
+            auto d = data;
+            qDebug() << d.msg;
+            ui->result->appendPlainText(QString::fromStdString(d.msg));
+        })
+        .fail([]() {
+            qDebug() << "get video list failed!";
         })
         .finally([]() {
-            qDebug() << "promise finally";
+            qDebug() << "get video list finished!";
+        });*/
+
+    getVideoData(api)
+        .then([&](const VideoData& data) {
+            auto d = data;
+            qDebug() << d.msg;
+            if (d.videoList.size() <= 0) {
+                return;
+            }
+            for (auto v : d.videoList) {
+                ui->result->appendPlainText(QString::fromStdString(v.vod_name));
+                const auto urls = v.vod_play_url;
+                for (auto u : urls) {
+                    ui->result->appendPlainText(QString::fromStdString(u.episode));
+                    ui->result->appendPlainText(QString::fromStdString(u.url));
+                }
+            }
+            ui->result->appendPlainText(QString::fromStdString(d.msg));
+        })
+        .fail([]() {
+            qDebug() << "get video list failed!";
+        })
+        .finally([]() {
+            qDebug() << "get video list finished!";
         });
 
     // QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&pg=1"); // page n videolist

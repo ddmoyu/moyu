@@ -1,3 +1,6 @@
+﻿#include <string>
+#include <vector>
+
 /********************   Video API start   ********************/
 // video play urls
 struct VideoUrls
@@ -113,8 +116,8 @@ struct VideoClassType
     std::string type_name;
 };
 
-// api [&pg=] [&t=] [&ids=]
-struct VideoClassPageData
+// api base
+struct VideoBase
 {
     int code;
     std::string msg;
@@ -122,18 +125,17 @@ struct VideoClassPageData
     int pagecount;
     int limit;
     int total;
-    std::vector<VideoItem> list;
+};
+
+// api [&pg=] [&t=] [&ids=]
+struct VideoData : VideoBase
+{
+    std::vector<VideoItem> videoList;
 };
 
 // api [&wd=] [NULL]
-struct VideoSimpleData
+struct VideoSimpleData : VideoBase
 {
-    int code;
-    std::string msg;
-    int page;
-    int pagecount;
-    int limit;
-    int total;
     std::vector<VideoSimpleItem> videoList;
     std::vector<VideoClassType> classList;
 };

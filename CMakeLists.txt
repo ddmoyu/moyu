@@ -35,7 +35,7 @@ file(GLOB_RECURSE SOURCES
         ${PROJECT_SOURCE_DIR}/src/*.ui
 )
 
-qt_add_executable(${PROJECT_NAME})
+qt_add_executable(${PROJECT_NAME} WIN32)
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/third_party/sass/include
