@@ -1,3 +1,6 @@
 [submodule "third_party/singleapplication"]
 	path = third_party/singleapplication
 	url = https://github.com/itay-grudev/SingleApplication.git
+[submodule "third_party/qtpromise"]
+	path = third_party/qtpromise
+	url = https://github.com/simonbrunel/qtpromise.git

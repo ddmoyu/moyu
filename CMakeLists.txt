@@ -53,6 +53,7 @@ target_sources(${PROJECT_NAME}
 )
 
 add_subdirectory(third_party/singleapplication)
+add_subdirectory(third_party/qtpromise)
 
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
@@ -64,4 +65,5 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::MultimediaWidgets
     Sass
     SingleApplication::SingleApplication
+    qtpromise
 )

@@ -19,7 +19,7 @@ Main::~Main() { }
 
 void Main::initUi()
 {
-    const QString style = Util::invokeStyleSheetLoad("dark");
+    const QString style = invokeStyleSheetLoad("dark");
     setStyleSheet(style);
 }
 

@@ -3,12 +3,13 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <QString>
+#include <QtPromise>
+#include "../common/common.h"
 
-class Util
-{
-public:
-    static QString invokeStyleSheetLoad(const QString& qValue);
-};
+QString invokeStyleSheetLoad(const QString& qValue);
+
+VideoSimpleData getVideoSimpleData(const QString& api);
+
+QtPromise::QPromise<QString> testPromise(const QUrl& api);
 
 #endif // UTILS_H
