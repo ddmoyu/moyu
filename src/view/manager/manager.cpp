@@ -22,7 +22,7 @@ void Manager::initConnect()
 
 void Manager::testHttpsRequest()
 {
-    const QString api("https://collect.wolongzyw.com/api.php/provide/vod/");
+    const QString api("http://cj.lziapi.com/api.php/provide/vod/");
 
     // ReSharper disable once CppExpressionWithoutSideEffects
     /*getVideoSimpleData("https://collect.wolongzyw.com/api.php/provide/vod/")

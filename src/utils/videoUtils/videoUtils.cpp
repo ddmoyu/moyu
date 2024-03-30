@@ -2,6 +2,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <regex>
+#include <unordered_set>
 
 /********************   JSON parser start   ********************/
 VideoSimpleItem parseJsonVideoSimpleItem(const dom::object& obj)
@@ -20,25 +21,26 @@ VideoSimpleItem parseJsonVideoSimpleItem(const dom::object& obj)
 VideoItem parseJsonVideoItem(const dom::object& obj)
 {
     VideoItem item;
-    item.vod_id       = obj["vod_id"].get_int64().value();
-    item.type_id      = obj["type_id"].get_int64().value();
-    item.type_id_1    = obj["type_id_1"].get_int64().value();
-    item.vod_name     = obj["vod_name"].get_string().value();
-    item.vod_en       = obj["vod_en"].get_string().value();
-    item.vod_pic      = obj["vod_pic"].get_string().value();
-    item.vod_actor    = obj["vod_actor"].get_string().value();
-    item.vod_director = obj["vod_director"].get_string().value();
-    item.vod_remarks  = obj["vod_remarks"].get_string().value();
-    item.vod_pubdate  = obj["vod_pubdate"].get_string().value();
-    item.vod_area     = obj["vod_area"].get_string().value();
-    item.vod_lang     = obj["vod_lang"].get_string().value();
-    item.vod_year     = obj["vod_year"].get_string().value();
-    item.vod_state    = obj["vod_state"].get_string().value();
-    item.vod_time     = obj["vod_time"].get_string().value();
-    item.type_name    = obj["type_name"].get_string().value();
+    item.vod_id        = obj["vod_id"].get_int64().value();
+    item.type_id       = obj["type_id"].get_int64().value();
+    item.type_id_1     = obj["type_id_1"].get_int64().value();
+    item.vod_name      = obj["vod_name"].get_string().value();
+    item.vod_en        = obj["vod_en"].get_string().value();
+    item.vod_pic       = obj["vod_pic"].get_string().value();
+    item.vod_actor     = obj["vod_actor"].get_string().value();
+    item.vod_director  = obj["vod_director"].get_string().value();
+    item.vod_remarks   = obj["vod_remarks"].get_string().value();
+    item.vod_pubdate   = obj["vod_pubdate"].get_string().value();
+    item.vod_area      = obj["vod_area"].get_string().value();
+    item.vod_lang      = obj["vod_lang"].get_string().value();
+    item.vod_year      = obj["vod_year"].get_string().value();
+    item.vod_state     = obj["vod_state"].get_string().value();
+    item.vod_time      = obj["vod_time"].get_string().value();
+    item.type_name     = obj["type_name"].get_string().value();
+    item.vod_play_note = obj["vod_play_note"].get_string().value();
 
     const auto urls   = obj["vod_play_url"].get_string().value();
-    item.vod_play_url = parseJsonVideoUrls(urls.data());
+    item.vod_play_url = parseJsonVideoUrls(urls.data(), item.vod_play_note);
     return item;
 }
 VideoClassType parseJsonVideoClassType(const dom::object& obj)
@@ -113,21 +115,46 @@ void parseJsonVideoBase(VideoBase& base, const dom::object& json)
         base.total                    = std::stoi(_total.data());
     }
 }
-std::vector<VideoUrls> parseJsonVideoUrls(const std::string& input)
+std::vector<VideoUrls> parseJsonVideoUrls(const std::string& input, const std::string& separator)
 {
     std::vector<VideoUrls> urls;
-    std::regex url_pattern(R"(([^#$]+)\$(https?://[^#]+))");
+    std::unordered_set<std::string> uniqueUrls;
+    // 正则表达式现在指定以 .m3u8 结尾的 URL
+    std::regex url_pattern(R"(([^#$]+)\$(https?://[^#]+\.m3u8))");
 
-    auto begin = std::sregex_iterator(input.begin(), input.end(), url_pattern);
-    auto end   = std::sregex_iterator();
+    // 如果separator不为空，我们首先根据separator分割输入的字符串
+    std::vector<std::string> parts;
+    if (!separator.empty()) {
+        std::regex sep_pattern(separator); // 使用separator作为正则表达式
 
-    for (std::sregex_iterator i = begin; i != end; ++i) {
-        std::smatch match = *i;
-        if (match.size() == 3) {
-            VideoUrls videoUrl;
-            videoUrl.episode = match[1].str();
-            videoUrl.url     = match[2].str();
-            urls.push_back(videoUrl);
+        std::sregex_token_iterator iter(input.begin(), input.end(), sep_pattern, -1);
+        std::sregex_token_iterator end;
+        for (; iter != end; ++iter) {
+            parts.push_back(*iter); // 添加分割后的部分到parts向量中
+        }
+    }
+    else {
+        // 如果separator为空，则整个输入是一个部分
+        parts.push_back(input);
+    }
+
+    // 解析每一部分寻找URL
+    for (const auto& part : parts) {
+        auto matches_begin = std::sregex_iterator(part.begin(), part.end(), url_pattern);
+        auto matches_end   = std::sregex_iterator();
+
+        for (std::sregex_iterator i = matches_begin; i != matches_end; ++i) {
+            std::smatch match = *i;
+            if (match.size() == 3) { // 正确匹配组大小为3
+                std::string episode = match[1].str();
+                std::string url     = match[2].str();
+
+                // 保证URL的独特性
+                if (uniqueUrls.find(url) == uniqueUrls.end()) {
+                    urls.push_back({episode, url});
+                    uniqueUrls.insert(url);
+                }
+            }
         }
     }
     return urls;

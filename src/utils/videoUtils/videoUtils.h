@@ -15,7 +15,7 @@ VideoItem parseJsonVideoItem(const dom::object& obj);
 VideoClassType parseJsonVideoClassType(const dom::object& obj);
 VideoSimpleData parseJsonVideoSimpleData(const std::string& jsonContent);
 void parseJsonVideoBase(VideoBase& base, const dom::object& json);
-std::vector<VideoUrls> parseJsonVideoUrls(const std::string& str);
+std::vector<VideoUrls> parseJsonVideoUrls(const std::string& str, const std::string& separator);
 VideoData parserJsonVideoData(const std::string& jsonContent);
 /********************    JSON parser end    ********************/
 

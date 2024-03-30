@@ -151,7 +151,7 @@ struct IPTVItem
 };
 /********************   IPTVAPI API end   ********************/
 
-/******************** Subscribe API start ********************/
+/********************   Feeds API start   ********************/
 // API
 struct APIINFO
 {
