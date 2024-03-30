@@ -1,6 +1,9 @@
 ﻿#include "manager.h"
 
 #include "../../utils/utils.h"
+#include "simdjson.h"
+
+using namespace simdjson;
 
 Manager::Manager(QWidget* parent)
     : QWidget(parent)
@@ -23,39 +26,32 @@ void Manager::initConnect()
 
 void Manager::testHttpsRequest()
 {
-    // const auto util = new Util();
-    QUrl api("https://collect.wolongzyw.com/api.php/provide/vod/");
-    // const auto data = util->getVideoSimpleData(api);
-    /*const auto data = getVideoSimpleData(api);
-    qDebug() << data.code;*/
-
+    const QUrl api("https://collect.wolongzyw.com/api.php/provide/vod/");
+    // ReSharper disable once CppExpressionWithoutSideEffects
     testPromise(api)
-        .then([&](const QString& code) {
-            qDebug() << "code: " << code;
-            ui->result->setPlainText(code);
+        .then([&](const QString& code) { // NOLINT(clang-diagnostic-microsoft-end-of-file)
+            // ui->result->setPlainText(code);
+
+            const QString test = QString("{\"msg\":\"你好, 世界！\"}");
+
+            dom::parser parser;
+            const dom::element json = parser.parse(test.toStdString());
+            std::cout << "Parsed JSON:" << json << std::endl;
+
+            std::string_view msg;
+            json["msg"].get(msg);
+            std::cout << "Value of 'example': " << msg.data() << std::endl;
+
+            ui->result->setPlainText(QString::fromStdString(msg.data()));
+
         })
         .finally([]() {
             qDebug() << "promise finally";
         });
 
-    // auto networkManager = new QNetworkAccessManager(this);
-    //  //QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&pg=1"); // page n videolist
+    // QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&pg=1"); // page n videolist
     // QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?ac=videolist&ids=69733"); // video detail
-    ////QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?wd=1");
-    // networkManager->get(QNetworkRequest(url));
-    // connect(networkManager, &QNetworkAccessManager::finished, this, [](QNetworkReply* reply) {
-    //     qDebug() << "request successfully";
-    //     int code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    //     qDebug() << "code: " << code;
-    //     if (reply->error() != QNetworkReply::NoError || code != 200) {
-    //         qDebug() << reply->errorString().toLatin1().data();
-    //     }
-    //     else {
-    //         QByteArray buff = reply->readAll();
-    //         qDebug() << buff.data();
-    //     }
-    //     reply->deleteLater();
-    // });
+    // QUrl url("https://collect.wolongzyw.com/api.php/provide/vod/?wd=1");
 }
 
 void Manager::showRemoteImage()
