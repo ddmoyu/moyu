@@ -4,3 +4,6 @@
 [submodule "third_party/qtpromise"]
 	path = third_party/qtpromise
 	url = https://github.com/simonbrunel/qtpromise.git
+[submodule "third_party/simdjson"]
+	path = third_party/simdjson
+	url = https://github.com/simdjson/simdjson.git
