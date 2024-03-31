@@ -119,37 +119,29 @@ std::vector<VideoUrls> parseJsonVideoUrls(const std::string& input, const std::s
 {
     std::vector<VideoUrls> urls;
     std::unordered_set<std::string> uniqueUrls;
-    // 正则表达式现在指定以 .m3u8 结尾的 URL
     std::regex url_pattern(R"(([^#$]+)\$(https?://[^#]+\.m3u8))");
-
-    // 如果separator不为空，我们首先根据separator分割输入的字符串
     std::vector<std::string> parts;
     if (!separator.empty()) {
-        std::regex sep_pattern(separator); // 使用separator作为正则表达式
-
+        std::string escaped_separator = std::regex_replace(separator, std::regex("\\$"), "\\$");
+        std::regex sep_pattern(escaped_separator.empty() ? "(?!x)x" : escaped_separator);
         std::sregex_token_iterator iter(input.begin(), input.end(), sep_pattern, -1);
         std::sregex_token_iterator end;
         for (; iter != end; ++iter) {
-            parts.push_back(*iter); // 添加分割后的部分到parts向量中
+            parts.push_back(*iter);
         }
     }
     else {
-        // 如果separator为空，则整个输入是一个部分
         parts.push_back(input);
     }
 
-    // 解析每一部分寻找URL
     for (const auto& part : parts) {
         auto matches_begin = std::sregex_iterator(part.begin(), part.end(), url_pattern);
         auto matches_end   = std::sregex_iterator();
-
         for (std::sregex_iterator i = matches_begin; i != matches_end; ++i) {
             std::smatch match = *i;
-            if (match.size() == 3) { // 正确匹配组大小为3
+            if (match.size() == 3) {
                 std::string episode = match[1].str();
                 std::string url     = match[2].str();
-
-                // 保证URL的独特性
                 if (uniqueUrls.find(url) == uniqueUrls.end()) {
                     urls.push_back({episode, url});
                     uniqueUrls.insert(url);
