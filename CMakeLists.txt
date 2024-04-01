@@ -35,7 +35,10 @@ file(GLOB_RECURSE SOURCES
         ${PROJECT_SOURCE_DIR}/src/*.ui
 )
 
-qt_add_executable(${PROJECT_NAME} WIN32)
+qt_add_executable(${PROJECT_NAME})
+# no terminal use the following line
+# qt_add_executable(${PROJECT_NAME} WIN32)
+
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/third_party/sass/include
@@ -55,6 +58,7 @@ target_sources(${PROJECT_NAME}
 add_subdirectory(third_party/singleapplication)
 add_subdirectory(third_party/qtpromise)
 add_subdirectory(third_party/simdjson)
+add_subdirectory(third_party/pugixml)
 
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
@@ -68,4 +72,5 @@ target_link_libraries(${PROJECT_NAME}
     SingleApplication::SingleApplication
     qtpromise
     simdjson
+    pugixml
 )

@@ -54,9 +54,6 @@ VideoSimpleData parseJsonVideoSimpleData(const std::string& jsonContent)
 {
     dom::parser parser;
     auto result = parser.parse(jsonContent);
-    if (result.error()) {
-        throw std::runtime_error("json parser error");
-    }
 
     VideoSimpleData data;
     const dom::object json = result.value().get_object();
@@ -155,9 +152,6 @@ VideoData parserJsonVideoData(const std::string& jsonContent)
 {
     dom::parser parser;
     auto result = parser.parse(jsonContent);
-    if (result.error()) {
-        throw std::runtime_error("json parser error");
-    }
 
     VideoData data;
     const dom::object json = result.value().get_object();
@@ -172,6 +166,88 @@ VideoData parserJsonVideoData(const std::string& jsonContent)
 }
 /********************    JSON parser end    ********************/
 
+/********************   XML parser start   ********************/
+VideoSimpleItem parseXmlVideoSimpleItem(const pugi::xml_node& node)
+{
+    VideoSimpleItem item;
+    return item;
+}
+VideoItem parseXmlVideoItem(const pugi::xml_node& node)
+{
+    VideoItem item;
+    return item;
+}
+VideoClassType parseXmlVideoClassType(const pugi::xml_node& node)
+{
+    VideoClassType type;
+    return type;
+}
+std::vector<VideoUrls> parseXmlVideoUrls(const pugi::xml_node& node)
+{
+    std::vector<VideoUrls> list;
+    return list;
+}
+void parseXmlVideoBase(VideoBase& base, const std::string& content)
+{
+    pugi::xml_document doc;
+    doc.load_string(content.c_str());
+
+    base.code = 1;
+    base.msg  = "success";
+
+    const pugi::xml_node list = doc.child("rss").child("list");
+    if (list) {
+        base.page      = list.attribute("page").as_int();
+        base.pagecount = list.attribute("pagecount").as_int();
+        base.limit     = list.attribute("pagesize").as_int();
+        base.total     = list.attribute("recordcount").as_int();
+    }
+}
+VideoSimpleData parserXmlVideoSimpleData(const std::string& xmlContent)
+{
+    VideoSimpleData data;
+    pugi::xml_document doc;
+    doc.load_string(xmlContent.c_str());
+
+    const auto list = doc.child("rss").child("list");
+    for (auto video : list.children("video")) {
+        const auto item = parseXmlVideoSimpleItem(video);
+        data.videoList.push_back(item);
+    }
+
+    const auto _class = doc.child("rss").child("class");
+    for (auto ty : _class.children("ty")) {
+        const auto item = parseXmlVideoClassType(ty);
+        data.classList.push_back(item);
+    }
+
+    return data;
+}
+VideoData parserXmlVideoData(const std::string& xmlContent)
+{
+    VideoData data;
+
+    return data;
+}
+/********************    XML parser end    ********************/
+
+VideoDataType checkApiDataType(const std::string& content)
+{
+    dom::parser parser;
+    const auto jsonResult = parser.parse(content);
+    if (jsonResult.error() == SUCCESS) {
+        return VideoDataType::JSON;
+    }
+
+    pugi::xml_document doc;
+    const pugi::xml_parse_result xmlResult = doc.load_string(content.c_str());
+    if (xmlResult) {
+        return VideoDataType::XML;
+    }
+
+    return VideoDataType::UNKNOWN;
+}
+
 QtPromise::QPromise<VideoSimpleData> getVideoSimpleData(const QString& api)
 {
     return QtPromise::QPromise<VideoSimpleData>{[api](const QtPromise::QPromiseResolve<VideoSimpleData>& resolve, const QtPromise::QPromiseReject<VideoSimpleData>& reject) {
@@ -179,9 +255,20 @@ QtPromise::QPromise<VideoSimpleData> getVideoSimpleData(const QString& api)
         QNetworkReply* reply           = manager->get(QNetworkRequest{api});
         QObject::connect(reply, &QNetworkReply::finished, [reply, resolve, reject]() {
             if (reply->error() == QNetworkReply::NoError) {
-                const QString res = reply->readAll();
-                const auto data   = parseJsonVideoSimpleData(res.toStdString());
-                resolve(data);
+                const QString res   = reply->readAll();
+                const auto dataType = checkApiDataType(res.toStdString());
+                VideoSimpleData data;
+                if (dataType == VideoDataType::JSON) {
+                    data = parseJsonVideoSimpleData(res.toStdString());
+                    resolve(data);
+                }
+                else if (dataType == VideoDataType::XML) {
+                    data = parserXmlVideoSimpleData(res.toStdString());
+                    resolve(data);
+                }
+                else {
+                    reject();
+                }
             }
             else {
                 reject();
