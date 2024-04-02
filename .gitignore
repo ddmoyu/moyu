@@ -1,5 +1,3 @@
 /.vs
 /out
 /.env
-third_party/pugixml/docs
-third_party/pugixml/tests
