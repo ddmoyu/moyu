@@ -17,20 +17,18 @@ VideoClassType parseJsonVideoClassType(const dom::object& obj);
 std::vector<VideoUrls> parseJsonVideoUrls(const std::string& str, const std::string& separator);
 void parseJsonVideoBase(VideoBase& base, const dom::object& json);
 VideoSimpleData parseJsonVideoSimpleData(const std::string& jsonContent);
-VideoData parserJsonVideoData(const std::string& jsonContent);
+VideoData parseJsonVideoData(const std::string& jsonContent);
 /********************    JSON parser end    ********************/
 
 /********************   XML parser start   ********************/
 VideoSimpleItem parseXmlVideoSimpleItem(const pugi::xml_node& node);
 VideoItem parseXmlVideoItem(const pugi::xml_node& node);
 VideoClassType parseXmlVideoClassType(const pugi::xml_node& node);
-std::vector<VideoUrls> parseXmlVideoUrls(const std::string& str);
-void parseXmlVideoBase(VideoBase& base, const std::string& content);
-VideoSimpleData parserXmlVideoSimpleData(const std::string& xmlContent);
-VideoData parserXmlVideoData(const std::string& xmlContent);
+std::vector<VideoUrls> parseXmlVideoUrls(const pugi::xml_node& node);
+void parseXmlVideoBase(VideoBase& base, const pugi::xml_document& doc);
+VideoSimpleData parseXmlVideoSimpleData(const std::string& xmlContent);
+VideoData parseXmlVideoData(const std::string& xmlContent);
 /********************    XML parser end    ********************/
-
-VideoDataType checkApiDataType(const std::string& content);
 
 QtPromise::QPromise<VideoSimpleData> getVideoSimpleData(const QString& api);
 

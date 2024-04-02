@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "ui_player.h"
-#include <QMediaPlayer>
-#include <QVideoWidget>
+// #include <QMediaPlayer>
+// #include <QVideoWidget>
 
 class Player : public QWidget
 {
@@ -14,8 +14,8 @@ public:
 private:
     Ui::PlayerClass* ui;
 
-    QMediaPlayer* m_player;
-    QVideoWidget* m_videoWgt;
+    // QMediaPlayer* m_player;
+    // QVideoWidget* m_videoWgt;
 
     QVector<QString> videoUrls;
 

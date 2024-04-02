@@ -1,6 +1,7 @@
 ﻿#include "videoUtils.h"
-#include <QNetworkAccessManager>
+#include "../networkManager/networkManager.h"
 #include <QNetworkReply>
+#include <QtConcurrent>
 #include <regex>
 #include <unordered_set>
 
@@ -148,7 +149,7 @@ std::vector<VideoUrls> parseJsonVideoUrls(const std::string& input, const std::s
     }
     return urls;
 }
-VideoData parserJsonVideoData(const std::string& jsonContent)
+VideoData parseJsonVideoData(const std::string& jsonContent)
 {
     dom::parser parser;
     auto result = parser.parse(jsonContent);
@@ -170,44 +171,76 @@ VideoData parserJsonVideoData(const std::string& jsonContent)
 VideoSimpleItem parseXmlVideoSimpleItem(const pugi::xml_node& node)
 {
     VideoSimpleItem item;
+    item.vod_id    = node.child("id").text().as_int();
+    item.vod_name  = node.child("name").text().as_string();
+    item.type_id   = node.child("tid").text().as_int();
+    item.type_name = node.child("type").text().as_string();
+    item.vod_time  = node.child("last").text().as_string();
     return item;
 }
 VideoItem parseXmlVideoItem(const pugi::xml_node& node)
 {
     VideoItem item;
+    item.vod_id       = node.child("id").text().as_int();
+    item.vod_name     = node.child("name").text().as_string();
+    item.type_id      = node.child("tid").text().as_int();
+    item.type_name    = node.child("type").text().as_string();
+    item.vod_time     = node.child("last").text().as_string();
+    item.vod_pic      = node.child("pic").text().as_string();
+    item.vod_lang     = node.child("lang").text().as_string();
+    item.vod_area     = node.child("area").text().as_string();
+    item.vod_year     = node.child("year").text().as_string();
+    item.vod_state    = node.child("state").text().as_string();
+    item.vod_actor    = node.child("actor").text().as_string();
+    item.vod_director = node.child("director").text().as_string();
+    const auto urls   = node.child("dl");
+    item.vod_play_url = parseXmlVideoUrls(urls);
     return item;
 }
 VideoClassType parseXmlVideoClassType(const pugi::xml_node& node)
 {
-    VideoClassType type;
-    return type;
+    VideoClassType item;
+    item.type_id   = node.attribute("id").as_int();
+    item.type_name = node.text().get();
+    return item;
 }
 std::vector<VideoUrls> parseXmlVideoUrls(const pugi::xml_node& node)
 {
     std::vector<VideoUrls> list;
+    const auto dds = node.children("dd");
+    for (auto d : dds) {
+        VideoUrls v;
+        const auto item = d.text().as_string();
+        std::string text(item);
+        const std::string::size_type separator_pos = text.find('$');
+        if (separator_pos != std::string::npos) {
+            const std::string name = text.substr(0, separator_pos);
+            const std::string url  = text.substr(separator_pos + 1);
+            v.episode              = name;
+            v.url                  = url;
+        }
+        list.push_back(v);
+    }
     return list;
 }
-void parseXmlVideoBase(VideoBase& base, const std::string& content)
+void parseXmlVideoBase(VideoBase& base, const pugi::xml_document& doc)
 {
-    pugi::xml_document doc;
-    doc.load_string(content.c_str());
-
     base.code = 1;
     base.msg  = "success";
 
-    const pugi::xml_node list = doc.child("rss").child("list");
-    if (list) {
+    if (const pugi::xml_node list = doc.child("rss").child("list")) {
         base.page      = list.attribute("page").as_int();
         base.pagecount = list.attribute("pagecount").as_int();
         base.limit     = list.attribute("pagesize").as_int();
         base.total     = list.attribute("recordcount").as_int();
     }
 }
-VideoSimpleData parserXmlVideoSimpleData(const std::string& xmlContent)
+VideoSimpleData parseXmlVideoSimpleData(const std::string& xmlContent)
 {
     VideoSimpleData data;
     pugi::xml_document doc;
     doc.load_string(xmlContent.c_str());
+    parseXmlVideoBase(data, doc);
 
     const auto list = doc.child("rss").child("list");
     for (auto video : list.children("video")) {
@@ -223,52 +256,49 @@ VideoSimpleData parserXmlVideoSimpleData(const std::string& xmlContent)
 
     return data;
 }
-VideoData parserXmlVideoData(const std::string& xmlContent)
+VideoData parseXmlVideoData(const std::string& xmlContent)
 {
     VideoData data;
+    pugi::xml_document doc;
+    doc.load_string(xmlContent.c_str());
+    parseXmlVideoBase(data, doc);
+
+    const auto list = doc.child("rss").child("list");
+    for (auto video : list.children("video")) {
+        const auto item = parseXmlVideoItem(video);
+        data.videoList.push_back(item);
+    }
 
     return data;
 }
 /********************    XML parser end    ********************/
 
-VideoDataType checkApiDataType(const std::string& content)
-{
-    dom::parser parser;
-    const auto jsonResult = parser.parse(content);
-    if (jsonResult.error() == SUCCESS) {
-        return VideoDataType::JSON;
-    }
-
-    pugi::xml_document doc;
-    const pugi::xml_parse_result xmlResult = doc.load_string(content.c_str());
-    if (xmlResult) {
-        return VideoDataType::XML;
-    }
-
-    return VideoDataType::UNKNOWN;
-}
-
 QtPromise::QPromise<VideoSimpleData> getVideoSimpleData(const QString& api)
 {
     return QtPromise::QPromise<VideoSimpleData>{[api](const QtPromise::QPromiseResolve<VideoSimpleData>& resolve, const QtPromise::QPromiseReject<VideoSimpleData>& reject) {
-        QNetworkAccessManager* manager = new QNetworkAccessManager();
+        QNetworkAccessManager* manager = NetworkManager::instance().manager();
         QNetworkReply* reply           = manager->get(QNetworkRequest{api});
         QObject::connect(reply, &QNetworkReply::finished, [reply, resolve, reject]() {
             if (reply->error() == QNetworkReply::NoError) {
-                const QString res   = reply->readAll();
-                const auto dataType = checkApiDataType(res.toStdString());
-                VideoSimpleData data;
-                if (dataType == VideoDataType::JSON) {
-                    data = parseJsonVideoSimpleData(res.toStdString());
-                    resolve(data);
-                }
-                else if (dataType == VideoDataType::XML) {
-                    data = parserXmlVideoSimpleData(res.toStdString());
-                    resolve(data);
-                }
-                else {
-                    reject();
-                }
+                const QString res = reply->readAll();
+                // ReSharper disable once CppNoDiscardExpression
+                QtConcurrent::run([res, resolve, reject]() {
+                    try {
+                        VideoSimpleData data;
+                        if (res.startsWith("<?xml")) {
+                            data = parseXmlVideoSimpleData(res.toStdString());
+                        }
+                        else {
+                            data = parseJsonVideoSimpleData(res.toStdString());
+                        }
+                        QMetaObject::invokeMethod(QCoreApplication::instance(), [resolve, data]() {
+                            resolve(data);
+                        });
+                    }
+                    catch (...) {
+                        QMetaObject::invokeMethod(QCoreApplication::instance(), reject);
+                    }
+                });
             }
             else {
                 reject();
@@ -281,7 +311,7 @@ QtPromise::QPromise<VideoSimpleData> getVideoSimpleData(const QString& api)
 QtPromise::QPromise<VideoData> getVideoData(const QString& api, int type, int page, int ids)
 {
     return QtPromise::QPromise<VideoData>{[&](const QtPromise::QPromiseResolve<VideoData>& resolve, const QtPromise::QPromiseReject<VideoData>& reject) {
-        QNetworkAccessManager* manager = new QNetworkAccessManager();
+        QNetworkAccessManager* manager = NetworkManager::instance().manager();
         QString url                    = api + "?ac=videolist";
         if (ids != -1) {
             url += "&ids=" + QString::number(ids);
@@ -298,8 +328,24 @@ QtPromise::QPromise<VideoData> getVideoData(const QString& api, int type, int pa
         QObject::connect(reply, &QNetworkReply::finished, [reply, resolve, reject]() {
             if (reply->error() == QNetworkReply::NoError) {
                 const QString res = reply->readAll();
-                const auto data   = parserJsonVideoData(res.toStdString());
-                resolve(data);
+                // ReSharper disable once CppNoDiscardExpression
+                QtConcurrent::run([res, resolve, reject]() {
+                    try {
+                        VideoData data;
+                        if (res.startsWith("<?xml")) {
+                            data = parseXmlVideoData(res.toStdString());
+                        }
+                        else {
+                            data = parseJsonVideoData(res.toStdString());
+                        }
+                        QMetaObject::invokeMethod(QCoreApplication::instance(), [resolve, data]() {
+                            resolve(data);
+                        });
+                    }
+                    catch (...) {
+                        QMetaObject::invokeMethod(QCoreApplication::instance(), reject);
+                    }
+                });
             }
             else {
                 reject();

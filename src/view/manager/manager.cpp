@@ -23,29 +23,16 @@ void Manager::initConnect()
 void Manager::testHttpsRequest()
 {
     const QString api("http://cj.lziapi.com/api.php/provide/vod/");
+     //const QString api("https://api.maozyapi.com/inc/api.php");
 
     // ReSharper disable once CppExpressionWithoutSideEffects
-    /*getVideoSimpleData("https://collect.wolongzyw.com/api.php/provide/vod/")
-        .then([&](const VideoSimpleData& data) {
-            auto d = data;
-            qDebug() << d.msg;
-            ui->result->appendPlainText(QString::fromStdString(d.msg));
-        })
-        .fail([]() {
-            qDebug() << "get video list failed!";
-        })
-        .finally([]() {
-            qDebug() << "get video list finished!";
-        });*/
-
     getVideoData(api)
         .then([&](const VideoData& data) {
             auto d = data;
-            qDebug() << d.msg;
             if (d.videoList.size() <= 0) {
                 return;
             }
-            for (auto v : d.videoList) {
+            for (const auto v : d.videoList) {
                 ui->result->appendPlainText(QString::fromStdString(v.vod_name));
                 const auto urls = v.vod_play_url;
                 for (auto u : urls) {
@@ -53,7 +40,6 @@ void Manager::testHttpsRequest()
                     ui->result->appendPlainText(QString::fromStdString(u.url));
                 }
             }
-            ui->result->appendPlainText(QString::fromStdString(d.msg));
         })
         .fail([]() {
             qDebug() << "get video list failed!";

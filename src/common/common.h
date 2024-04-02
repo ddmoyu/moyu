@@ -2,14 +2,6 @@
 #include <vector>
 
 /********************   Video API start   ********************/
-// api data type
-enum class VideoDataType
-{
-    UNKNOWN,
-    JSON,
-    XML,
-};
-
 // video play urls
 struct VideoUrls
 {
@@ -215,7 +207,7 @@ struct Api
     std::vector<LiveAPI> liveApi;
     std::vector<JiexiAPI> JiexiApi;
 };
-/********************  Subscribe API end  ********************/
+/********************    Feeds API end    ********************/
 
 /********************    Settings start   ********************/
 struct Settings

@@ -21,7 +21,7 @@ set(CMAKE_PREFIX_PATH ${ENV_QT6_DIR})
 
 set(QAPPLICATION_CLASS QApplication CACHE STRING "Inheritance class for SingleApplication")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network Multimedia MultimediaWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network Concurrent)
 
 qt_standard_project_setup()
 
@@ -66,8 +66,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::Gui
     Qt6::Widgets
     Qt6::Network
-    Qt6::Multimedia 
-    Qt6::MultimediaWidgets
+    Qt6::Concurrent
     Sass
     SingleApplication::SingleApplication
     qtpromise

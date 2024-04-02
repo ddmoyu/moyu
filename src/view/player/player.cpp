@@ -17,10 +17,10 @@ Player::~Player() { }
 
 void Player::initUi()
 {
-    m_player   = new QMediaPlayer(ui->player);
+    /*m_player   = new QMediaPlayer(ui->player);
     m_videoWgt = new QVideoWidget(ui->player);
     m_videoWgt->resize(480, 360);
-    m_player->setVideoOutput(m_videoWgt);
+    m_player->setVideoOutput(m_videoWgt);*/
 
     QNetworkRequest req(QUrl("https://cdn.wlcdn99.com:777/32bca498/index.m3u8"));
 
@@ -36,17 +36,17 @@ void Player::initConnect()
     connect(ui->btn_play, &QPushButton::clicked, [this]() {
         playVideo();
     });
-    connect(ui->btn_pause, &QPushButton::clicked, [this]() {
+    /*connect(ui->btn_pause, &QPushButton::clicked, [this]() {
         m_player->pause();
     });
     connect(ui->btn_stop, &QPushButton::clicked, [this]() {
         m_player->stop();
-    });
+    });*/
 }
 
 void Player::playVideo()
 {
-    m_player->play();
+    // m_player->play();
 
     // download ts and play it;
 
@@ -81,7 +81,7 @@ void Player::playNextSegment()
         /*QMediaContent media(QUrl(videoUrls.first()));
         player.setMedia(media);
         player.play();*/
-        m_player->setSource(QUrl(videoUrls.first()));
+        // m_player->setSource(QUrl(videoUrls.first()));
         videoUrls.removeFirst();
     }
 }
