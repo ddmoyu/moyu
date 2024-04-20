@@ -1,4 +1,4 @@
-### dev
+﻿### dev
 
 #### 1. add submodule git
 
@@ -18,6 +18,10 @@ create an `.env` file in the root dir of the project, and fill in the qt6 path i
 ```
 QT6_DIR=E:/Qt6/6.6.1/msvc2019_64
 ```
+
+#### 3. copy openssl
+
+Copy all files from the openssl/bin directory to the software debug or release root directory
 
 
 ### debug
