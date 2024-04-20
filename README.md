@@ -14,10 +14,7 @@ git submodule update --init --recursive
 
 #### 2. add qt6 env
 
-create an `.env` file in the root dir of the project, and fill in the qt6 path in the following format.
-```
-QT6_DIR=E:/Qt6/6.6.1/msvc2019_64
-```
+add `E:/Qt6/6.6.1/msvc2019_64` (replace with your own) to the system environment variable.
 
 #### 3. copy openssl
 

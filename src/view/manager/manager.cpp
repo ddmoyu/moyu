@@ -16,14 +16,25 @@ void Manager::initUi() { }
 
 void Manager::initConnect()
 {
-    connect(ui->btn_test_https, &QPushButton::clicked, this, &Manager::testHttpsRequest);
-    connect(ui->btn_test_image, &QPushButton::clicked, this, &Manager::showRemoteImage);
+    connect(ui->btn_feed_add, &QToolButton::clicked, this, &Manager::addFeedLink);
+    /*connect(ui->btn_test_https, &QPushButton::clicked, this, &Manager::testHttpsRequest);
+    connect(ui->btn_test_image, &QPushButton::clicked, this, &Manager::showRemoteImage);*/
+}
+
+void Manager::addFeedLink()
+{
+    QString str = ui->le_feed->text();
+}
+
+void Manager::feedLinkRequest(const QString& url)
+{
+    const QString testApi = "https://gist.githubusercontent.com/ddmoyu/390a12610fb283ca7fe9bd80f0b04935/raw/5194f2843f78ff48aca4193630ce077d2cbb516b/feed.json";
 }
 
 void Manager::testHttpsRequest()
 {
     const QString api("http://cj.lziapi.com/api.php/provide/vod/");
-     //const QString api("https://api.maozyapi.com/inc/api.php");
+    // const QString api("https://api.maozyapi.com/inc/api.php");
 
     // ReSharper disable once CppExpressionWithoutSideEffects
     getVideoData(api)
@@ -33,12 +44,12 @@ void Manager::testHttpsRequest()
                 return;
             }
             for (const auto v : d.videoList) {
-                ui->result->appendPlainText(QString::fromStdString(v.vod_name));
+                /*ui->result->appendPlainText(QString::fromStdString(v.vod_name));
                 const auto urls = v.vod_play_url;
                 for (auto u : urls) {
                     ui->result->appendPlainText(QString::fromStdString(u.episode));
                     ui->result->appendPlainText(QString::fromStdString(u.url));
-                }
+                }*/
             }
         })
         .fail([]() {

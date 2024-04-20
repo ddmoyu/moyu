@@ -1,4 +1,4 @@
-[submodule "third_party/singleapplication"]
+﻿[submodule "third_party/singleapplication"]
 	path = third_party/singleapplication
 	url = https://github.com/itay-grudev/SingleApplication.git
 [submodule "third_party/qtpromise"]

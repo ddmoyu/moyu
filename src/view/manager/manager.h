@@ -16,6 +16,10 @@ private:
 
     void initConnect();
 
+    void addFeedLink();
+
+    void feedLinkRequest(const QString& url);
+
     void testHttpsRequest();
 
     void showRemoteImage();

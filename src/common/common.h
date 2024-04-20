@@ -151,15 +151,15 @@ struct IPTVItem
 };
 /********************   IPTVAPI API end   ********************/
 
-/********************   Feeds API start   ********************/
+/********************    Feed API start   ********************/
 // API
-struct APIINFO
+struct APIInfo
 {
     std::string version;
     std::string author;
     std::string email;
     std::string website;
-    std::string describe;
+    std::string description;
 };
 
 struct BaseAPI
@@ -189,7 +189,7 @@ struct IPTVAPI : BaseAPI
 struct LiveAPI : BaseAPI
 { };
 
-struct JiexiAPI : BaseAPI
+struct JieXiAPI : BaseAPI
 { };
 
 struct DriveAPI : BaseAPI
@@ -197,17 +197,17 @@ struct DriveAPI : BaseAPI
     std::string start;
 };
 
-struct Api
+struct FeedApi
 {
-    APIINFO info;
+    APIInfo info;
     std::vector<NovelAPI> novelApi;
     std::vector<ImageAPI> imageApi;
     std::vector<VideoAPI> videoApi;
     std::vector<IPTVAPI> iptvApi;
     std::vector<LiveAPI> liveApi;
-    std::vector<JiexiAPI> JiexiApi;
+    std::vector<JieXiAPI> JieXiApi;
 };
-/********************    Feeds API end    ********************/
+/********************     Feed API end    ********************/
 
 /********************    Settings start   ********************/
 struct Settings
