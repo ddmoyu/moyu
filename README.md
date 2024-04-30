@@ -20,11 +20,13 @@ add `E:/Qt6/6.6.1/msvc2019_64` (replace with your own) to the system environment
 
 Copy all files from the openssl/bin directory to the software debug or release root directory
 
+Copy libwinpthread/bin file to the debug or release root directory
+
 
 ### debug
 
 Run the windeployqt.exe program to complete the missing dependencies
 ```
-E:\Qt6\6.6.1\msvc2019_64\bin\windeployqt.exe H:\CPP\moyu\out\build\x64-Debug\moyu.exe
+D:\Qt\6.6.3\msvc2019_64\bin\windeployqt.exe E:\MoYu\moyu\out\build\x64-debug\moyu.exe
 D:\Qt6\6.6.2\msvc2019_64\bin\windeployqt.exe D:\workspace\moyu\out\build\x64-debug\moyu.exe
 ```
